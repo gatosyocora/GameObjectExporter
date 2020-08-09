@@ -11,6 +11,10 @@ namespace Gatosyocora.GameObjectExporter
 {
     public class GameObjectExporter : Editor
     {
+        public const string PROGRESS_WINDOW_TITLE = "GameObjectExporter";
+
+        public const string PROGRESS_WINDOW_INFO = "Exporting Object...";
+
         [MenuItem("GameObject/Export Unitypackage/Default", false, 1)]
         public static void ExportGameObjectDefault()
         {
@@ -51,6 +55,8 @@ namespace Gatosyocora.GameObjectExporter
 
         public static void ExportGameObject(bool ignoreShader = false, bool ignoreDynamicBone = false)
         {
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0f);
+
             var targetObj = Selection.activeObject as GameObject;
             var c = '/';
             var depenciesAssetPaths = EditorUtility.CollectDependencies(new UnityEngine.Object[] { targetObj })
@@ -90,6 +96,8 @@ namespace Gatosyocora.GameObjectExporter
                                         .ToArray();
             }
 
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.2f);
+
             var exportObj = Instantiate(targetObj);
             var prefabPath = AssetDatabase.GenerateUniqueAssetPath($"Assets/{targetObj.name}.prefab");
             PrefabUtility.SaveAsPrefabAsset(exportObj, prefabPath, out bool success);
@@ -101,10 +109,15 @@ namespace Gatosyocora.GameObjectExporter
                 exportPath = AssetDatabase.GenerateUniqueAssetPath(exportPath);
             }
             var exportAssetPaths = depenciesAssetPaths.Concat(new string[] { prefabPath }).ToArray();
+
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
+
             AssetDatabase.ExportPackage(exportAssetPaths, exportPath, ExportPackageOptions.Default);
 
             AssetDatabase.DeleteAsset(prefabPath);
             GameObject.DestroyImmediate(exportObj);
+
+            EditorUtility.ClearProgressBar();
         }
     }
 }
