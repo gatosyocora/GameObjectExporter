@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 
+// GameObjectExporter ver 1.1
 // Copyright (c) 2020 gatosyocora
 // MIT License
 
