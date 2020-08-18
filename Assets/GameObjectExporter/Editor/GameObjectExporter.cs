@@ -65,7 +65,7 @@ namespace Gatosyocora.GameObjectExporter
                                         .Where(p => !p.Contains($"{c}VRChat Examples{c}"))
                                         .Where(p => !p.Contains($"{c}Editor{c}"));
 
-
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.2f);
 
             if (!ignoreDynamicBone && depenciesAssetPaths.Any(p => !p.Contains($"{c}DynamicBone{c}")))
             {
@@ -88,6 +88,8 @@ namespace Gatosyocora.GameObjectExporter
                 depenciesAssetPaths = depenciesAssetPaths
                                         .Where(p => !p.Contains($"{c}DynamicBone{c}"));
             }
+
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
 
             var shaderRootFolders = depenciesAssetPaths
                                         .Where(p => Path.GetExtension(p) == ".shader")
@@ -115,7 +117,7 @@ namespace Gatosyocora.GameObjectExporter
                                         .Union(shaderFiles);
             }
 
-            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.2f);
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.6f);
 
             var exportObj = Instantiate(targetObj);
             var prefabPath = AssetDatabase.GenerateUniqueAssetPath($"Assets/{targetObj.name}.prefab");
@@ -129,7 +131,7 @@ namespace Gatosyocora.GameObjectExporter
             }
             var exportAssetPaths = depenciesAssetPaths.Union(new string[] { prefabPath }).ToArray();
 
-            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
+            EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.8f);
 
             AssetDatabase.ExportPackage(exportAssetPaths, exportPath, ExportPackageOptions.Default);
 
