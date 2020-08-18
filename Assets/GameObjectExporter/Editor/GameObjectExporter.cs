@@ -62,9 +62,31 @@ namespace Gatosyocora.GameObjectExporter
             var depenciesAssetPaths = EditorUtility.CollectDependencies(new UnityEngine.Object[] { targetObj })
                                         .Select(asset => AssetDatabase.GetAssetPath(asset))
                                         .Where(p => !p.Contains($"{c}VRCSDK{c}"))
-                                        .Where(p => !p.Contains($"{c}Editor{c}"))
-                                        .Where(p => !ignoreDynamicBone || !p.Contains($"{c}DynamicBone{c}"))
-                                        .ToArray();
+                                        .Where(p => !p.Contains($"{c}Editor{c}"));
+
+
+
+            if (!ignoreDynamicBone && depenciesAssetPaths.Any(p => !p.Contains($"{c}DynamicBone{c}")))
+            {
+                var dynamicBoneRootFolder = AssetDatabase.FindAssets("DynamicBone t:Folder")
+                                                .Select(g => AssetDatabase.GUIDToAssetPath(g))
+                                                .FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(dynamicBoneRootFolder))
+                {
+                    var dynamicBoneAssets = AssetDatabase.FindAssets("", new string[] { dynamicBoneRootFolder })
+                                                .Select(g => AssetDatabase.GUIDToAssetPath(g))
+                                                .ToArray();
+
+                    depenciesAssetPaths = depenciesAssetPaths
+                                            .Union(dynamicBoneAssets);
+                }
+            }
+            else
+            {
+                depenciesAssetPaths = depenciesAssetPaths
+                                        .Where(p => !p.Contains($"{c}DynamicBone{c}"));
+            }
 
             var shaderRootFolders = depenciesAssetPaths
                             .Where(p => Path.GetExtension(p) == ".shader")
@@ -108,7 +130,7 @@ namespace Gatosyocora.GameObjectExporter
             {
                 exportPath = AssetDatabase.GenerateUniqueAssetPath(exportPath);
             }
-            var exportAssetPaths = depenciesAssetPaths.Concat(new string[] { prefabPath }).ToArray();
+            var exportAssetPaths = depenciesAssetPaths.Union(new string[] { prefabPath }).ToArray();
 
             EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
 
