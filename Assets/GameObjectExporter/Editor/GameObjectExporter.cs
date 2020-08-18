@@ -89,33 +89,29 @@ namespace Gatosyocora.GameObjectExporter
             }
 
             var shaderRootFolders = depenciesAssetPaths
-                            .Where(p => Path.GetExtension(p) == ".shader")
-                            .Select(p =>
-                            {
-                                var folders = p.Split(c);
-                                return $"{folders[0]}{c}{folders[1]}{c}";
-                            })
-                            .Distinct()
-                            .ToArray();
+                                        .Where(p => Path.GetExtension(p) == ".shader")
+                                        .Select(p =>
+                                        {
+                                            var folders = p.Split(c);
+                                            return $"{folders[0]}{c}{folders[1]}";
+                                        })
+                                        .Distinct()
+                                        .ToArray();
 
             if (ignoreShader)
             {
                 depenciesAssetPaths = depenciesAssetPaths
-                                            .Where(p => !shaderRootFolders.Any(s => p.StartsWith(s)))
-                                            .ToArray();
+                                            .Where(p => !shaderRootFolders.Any(s => p.StartsWith(s)));
             }
-            // Shaderを含める場合はそのShaderのEditor拡張は含める
+            // Shaderを含める場合はそのShaderのEditor拡張とcgincファイルを含める
             else
             {
-                var shaderFiles = AssetDatabase.FindAssets("")
+                var shaderFiles = AssetDatabase.FindAssets("", shaderRootFolders)
                                     .Select(g => AssetDatabase.GUIDToAssetPath(g))
-                                    .Where(p => shaderRootFolders.Any(s => p.StartsWith(s)))
                                     .ToArray();
 
                 depenciesAssetPaths = depenciesAssetPaths
-                                        .Concat(shaderFiles)
-                                        .Distinct()
-                                        .ToArray();
+                                        .Union(shaderFiles);
             }
 
             EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.2f);
