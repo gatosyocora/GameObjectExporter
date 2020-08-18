@@ -62,6 +62,7 @@ namespace Gatosyocora.GameObjectExporter
             var depenciesAssetPaths = EditorUtility.CollectDependencies(new UnityEngine.Object[] { targetObj })
                                         .Select(asset => AssetDatabase.GetAssetPath(asset))
                                         .Where(p => !p.Contains($"{c}VRCSDK{c}"))
+                                        .Where(p => !p.Contains($"{c}VRChat Examples{c}"))
                                         .Where(p => !p.Contains($"{c}Editor{c}"));
 
 
