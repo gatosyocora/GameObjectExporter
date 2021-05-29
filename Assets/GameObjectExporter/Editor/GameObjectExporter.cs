@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-// GameObjectExporter ver 1.1
+// GameObjectExporter ver 1.1.1
 // Copyright (c) 2020 gatosyocora
 // MIT License
 
@@ -50,7 +50,7 @@ namespace Gatosyocora.GameObjectExporter
                             "ignore DynamicBone: Default + DynamicBoneを含めない\n" +
                             "ignore Shader and DynamicBone: 上記すべてを含めない\n" +
                             "\n" +
-                            "DesktopにGameObject名.unitypackageで書き出されます（上書きされる）",
+                            "DesktopにGameObject名.unitypackageで書き出されます（出力先に同名のファイルがあるとファイル名の後に数字がつきます）",
                             "OK");
         }
 
@@ -92,25 +92,21 @@ namespace Gatosyocora.GameObjectExporter
 
             EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
 
-            var shaderRootFolders = depenciesAssetPaths
+            var shaderFolders = depenciesAssetPaths
                                         .Where(p => Path.GetExtension(p) == ".shader")
-                                        .Select(p =>
-                                        {
-                                            var folders = p.Split(c);
-                                            return $"{folders[0]}{c}{folders[1]}";
-                                        })
+                                        .Select(p =>　Path.GetDirectoryName(p))
                                         .Distinct()
                                         .ToArray();
 
             if (ignoreShader)
             {
                 depenciesAssetPaths = depenciesAssetPaths
-                                            .Where(p => !shaderRootFolders.Any(s => p.StartsWith(s)));
+                                            .Where(p => !shaderFolders.Any(s => p.StartsWith(s)));
             }
             // Shaderを含める場合はそのShaderのEditor拡張とcgincファイルを含める
             else
             {
-                var shaderFiles = AssetDatabase.FindAssets("", shaderRootFolders)
+                var shaderFiles = AssetDatabase.FindAssets("", shaderFolders)
                                     .Select(g => AssetDatabase.GUIDToAssetPath(g))
                                     .ToArray();
 

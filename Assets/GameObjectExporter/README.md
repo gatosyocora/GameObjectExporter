@@ -2,7 +2,7 @@
 特定のGameObjectを含めたUnitypackageを作成します。
 デフォルトでEditor拡張とVRCSDK(VRChatで使われるSDK)を省きます。
 
-バージョン: v1.1
+バージョン: v1.1.1
 
 ## 使い方
 1. InspectorにあるGameObjectを右クリックする
@@ -18,6 +18,9 @@
 unitypackageインポート時にGameObjectはPrefabとしてAssetsフォルダの直下に配置されるようになっています。
 
 ## 更新履歴
+* v1.1.1
+	* 他のアバターフォルダに含まれるシェーダーを使用しているときに他のアバターフォルダもunitypackageに含まれてしまう不具合を修正
+	* READMEに書いてある説明が一部実際の挙動と異なっていたので修正
 * v1.1 
 	* プログレスバーが出るように(PR: sansuke05)
 	* DynamicBone関連ファイルの一部が正しく取得できていなかった不具合を修正
