@@ -92,25 +92,21 @@ namespace Gatosyocora.GameObjectExporter
 
             EditorUtility.DisplayProgressBar(PROGRESS_WINDOW_TITLE, PROGRESS_WINDOW_INFO, 0.4f);
 
-            var shaderRootFolders = depenciesAssetPaths
+            var shaderFolders = depenciesAssetPaths
                                         .Where(p => Path.GetExtension(p) == ".shader")
-                                        .Select(p =>
-                                        {
-                                            var folders = p.Split(c);
-                                            return $"{folders[0]}{c}{folders[1]}";
-                                        })
+                                        .Select(p =>　Path.GetDirectoryName(p))
                                         .Distinct()
                                         .ToArray();
 
             if (ignoreShader)
             {
                 depenciesAssetPaths = depenciesAssetPaths
-                                            .Where(p => !shaderRootFolders.Any(s => p.StartsWith(s)));
+                                            .Where(p => !shaderFolders.Any(s => p.StartsWith(s)));
             }
             // Shaderを含める場合はそのShaderのEditor拡張とcgincファイルを含める
             else
             {
-                var shaderFiles = AssetDatabase.FindAssets("", shaderRootFolders)
+                var shaderFiles = AssetDatabase.FindAssets("", shaderFolders)
                                     .Select(g => AssetDatabase.GUIDToAssetPath(g))
                                     .ToArray();
 
