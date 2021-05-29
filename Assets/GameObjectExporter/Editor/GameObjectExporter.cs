@@ -50,7 +50,7 @@ namespace Gatosyocora.GameObjectExporter
                             "ignore DynamicBone: Default + DynamicBoneを含めない\n" +
                             "ignore Shader and DynamicBone: 上記すべてを含めない\n" +
                             "\n" +
-                            "DesktopにGameObject名.unitypackageで書き出されます（上書きされる）",
+                            "DesktopにGameObject名.unitypackageで書き出されます（出力先に同名のファイルがあるとファイル名の後に数字がつきます）",
                             "OK");
         }
 
